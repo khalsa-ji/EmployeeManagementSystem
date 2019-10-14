@@ -2,12 +2,21 @@
 
 package com.example.employeemanagementsystem;
 
+import io.swagger.annotations.ApiModelProperty;
+
 import java.util.List;
 
 public class EmployeeChart {
+    @ApiModelProperty(notes = "Brief information of the employee")
     private EmployeeBrief employee;
+
+    @ApiModelProperty(notes = "Brief information of the employee's manager")
     private EmployeeBrief manager;
+
+    @ApiModelProperty(notes = "Complete list of employee's colleagues")
     private List<EmployeeBrief> colleagues;
+
+    @ApiModelProperty(notes = "Complete list of employees those who directly reports the given employee")
     private List<EmployeeBrief> reportingTo;
 
     public EmployeeChart(EmployeeBrief employee, EmployeeBrief manager, List<EmployeeBrief> colleagues, List<EmployeeBrief> reportingTo) {

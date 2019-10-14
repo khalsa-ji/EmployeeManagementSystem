@@ -7,16 +7,27 @@
 package com.example.employeemanagementsystem;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.swagger.annotations.ApiModelProperty;
 
 import javax.persistence.*;
 
-@Entity     @Table(name = "designation")
+@Entity
+@Table(name = "designation")
 public class Designation {
-    @Id     @GeneratedValue(strategy = GenerationType.IDENTITY)     @Column(name = "designation_id", nullable = false, unique = true)
+    @Id
+    @JsonIgnore
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "designation_id", nullable = false, unique = true)
+    @ApiModelProperty(notes = "System generated unique Designation ID")
     private int designationID;
-    @Column(name = "level_id", nullable = false)    @JsonIgnore
+
+    @Column(name = "level_id", nullable = false)
+    @JsonIgnore
+    @ApiModelProperty(notes = "Level ID for the designation")
     private float levelID;
+
     @Column(name = "designation", nullable = false)
+    @ApiModelProperty(notes = "Designation of the employee")
     private String designation;
 
     public Designation() {}

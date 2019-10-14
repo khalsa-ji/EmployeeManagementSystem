@@ -3,13 +3,19 @@
 package com.example.employeemanagementsystem;
 
 import com.example.employeemanagementsystem.builder.EmployeeBriefBuilder;
+import io.swagger.annotations.ApiModelProperty;
 
 import java.util.LinkedList;
 import java.util.List;
 
 public class EmployeeBrief {
+    @ApiModelProperty(notes = "Employee ID")
     private long employeeID;
+
+    @ApiModelProperty(notes = "Name of the employee")
     private String employeeName;
+
+    @ApiModelProperty(notes = "Job title of the employee")
     private String jobTitle;
 
     public EmployeeBrief(long employeeID, String employeeName, String jobTitle) {

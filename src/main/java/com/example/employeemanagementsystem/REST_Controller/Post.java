@@ -6,6 +6,9 @@ import com.example.employeemanagementsystem.Designation;
 import com.example.employeemanagementsystem.Employee;
 import com.example.employeemanagementsystem.service.DesignationService;
 import com.example.employeemanagementsystem.service.EmployeeService;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,7 +20,8 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-@RestController     @RequestMapping(value = "/api")
+@RestController
+@RequestMapping(value = "")
 public class Post {
     @Autowired
     EmployeeService employeeService;
@@ -26,6 +30,11 @@ public class Post {
     DesignationService designationService;
 
     @PostMapping(value = "/employees", consumes = "application/json", produces = "application/json")
+    @ApiOperation(value = "Adds a new Employee", response = Employee.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "Employee added successfully"),
+            @ApiResponse(code = 404, message = "Invalid details found for adding a new employee")
+    })
     public ResponseEntity<Employee> addEmployee(@RequestBody Employee employee) throws URISyntaxException {
         if(employee.getEmployeeName() == null || employee.getEmployeeName().equals(""))
             return ResponseEntity.badRequest().build();

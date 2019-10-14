@@ -8,13 +8,17 @@ import com.example.employeemanagementsystem.builder.DesignationBuilder;
 import com.example.employeemanagementsystem.builder.EmployeeBuilder;
 import com.example.employeemanagementsystem.service.DesignationService;
 import com.example.employeemanagementsystem.service.EmployeeService;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController     @RequestMapping(value = "/api/employees")
+@RestController
+@RequestMapping(value = "/employees")
 public class Put {
     @Autowired
     EmployeeService service;
@@ -23,6 +27,11 @@ public class Put {
     DesignationService designationService;
 
     @PutMapping(value = "/{ID}", produces = "application/json")
+    @ApiOperation(value = "Update information for an existing employee")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Information updated successfully"),
+            @ApiResponse(code = 404, message = "Invalid details found for updating the employee information")
+    })
     public ResponseEntity<Employee> updateEmployee(
             @PathVariable(value = "ID") Long ID,
             @RequestParam(value = "replace", required = false) Boolean isReplace,
