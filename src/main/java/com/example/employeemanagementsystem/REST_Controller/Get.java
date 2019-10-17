@@ -22,7 +22,7 @@ import java.util.List;
 import static com.example.employeemanagementsystem.EmployeeBrief.convertFrom;
 
 @RestController
-@RequestMapping(value = "")
+@RequestMapping(value = "/api/v1")
 public class Get {
     @Autowired
     EmployeeService service;
@@ -39,6 +39,10 @@ public class Get {
     public ResponseEntity<List<Employee>> getAllEmployees() {
         List<Employee> employeeList = service.getAllEmployees();
         if(employeeList.isEmpty())  return ResponseEntity.notFound().build();
+
+        //  TODO Remove this java sorting logic.
+        employeeList.sort(ComparatorClass.customComparator);
+
         return ResponseEntity.ok(employeeList);
     }
 
@@ -92,9 +96,13 @@ public class Get {
     @ApiOperation(value = "Fetch detailed employee chart for the given Employee ID")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully fetched the required detailed employee chart"),
+            @ApiResponse(code = 400, message = "Employee ID could not be negative."),
             @ApiResponse(code = 404, message = "Employee with the given Employee ID not found!")
     })
     public ResponseEntity<EmployeeChart> getEmployee(@PathVariable(value = "ID") Long ID) {
+        if(ID < 0)
+            return ResponseEntity.badRequest().build();
+
         Employee employee = service.getEmployeeByID(ID);
         if(employee.getEmployeeID() == 0)   return ResponseEntity.notFound().build();
 
@@ -139,7 +147,7 @@ public class Get {
     })
     public ResponseEntity<Designation> getDesignation(@PathVariable(value = "ID") Integer ID) {
         Designation designation = designationService.getDesignationByID(ID);
-        if(designation.getDesignationID() == -1)
+        if(designation.getLevelID() == -1)
             return ResponseEntity.notFound().build();
         return ResponseEntity.ok(designation);
     }

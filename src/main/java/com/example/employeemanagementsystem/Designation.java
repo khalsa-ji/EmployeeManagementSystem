@@ -15,7 +15,6 @@ import javax.persistence.*;
 @Table(name = "designation")
 public class Designation {
     @Id
-    @JsonIgnore
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "designation_id", nullable = false, unique = true)
     @ApiModelProperty(notes = "System generated unique Designation ID")

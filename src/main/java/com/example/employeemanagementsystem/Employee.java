@@ -7,6 +7,7 @@
 package com.example.employeemanagementsystem;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
 
 import javax.persistence.*;
@@ -15,12 +16,13 @@ import javax.persistence.*;
 @Table(name = "employee")
 public class Employee {
     @Id
-    @JsonIgnore
+    @JsonProperty("id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "employee_id", nullable = false, unique = true)
     @ApiModelProperty(notes = "System generated unique Employee ID")
     private long employeeID;
 
+    @JsonProperty("managerId")
     @Column(name = "manager_id", nullable = false)
     @ApiModelProperty(notes = "Manager ID(Employee ID of the Manager)")
     private long managerID;
@@ -31,6 +33,7 @@ public class Employee {
     @ApiModelProperty(notes = "Job ID of the employee. Assigned by the system based on the job title.")
     private Designation jobID;
 
+    @JsonProperty("name")
     @Column(name = "employee_name", nullable = false)
     @ApiModelProperty(notes = "Name of the employee")
     private String employeeName;

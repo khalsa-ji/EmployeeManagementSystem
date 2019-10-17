@@ -3,15 +3,18 @@
 package com.example.employeemanagementsystem;
 
 import com.example.employeemanagementsystem.builder.EmployeeBriefBuilder;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.util.LinkedList;
 import java.util.List;
 
 public class EmployeeBrief {
+    @JsonProperty("id")
     @ApiModelProperty(notes = "Employee ID")
     private long employeeID;
 
+    @JsonProperty("name")
     @ApiModelProperty(notes = "Name of the employee")
     private String employeeName;
 

@@ -16,6 +16,7 @@ public class EmployeeChart {
     @ApiModelProperty(notes = "Complete list of employee's colleagues")
     private List<EmployeeBrief> colleagues;
 
+//    @JsonProperty(value = "subordinates")
     @ApiModelProperty(notes = "Complete list of employees those who directly reports the given employee")
     private List<EmployeeBrief> reportingTo;
 

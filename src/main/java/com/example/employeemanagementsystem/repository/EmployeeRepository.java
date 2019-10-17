@@ -27,6 +27,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     int updateManagerID(Long prevID, Long newID);
 
 
+
 //    @Query("select e.employee_id, e.employee_name, e.job_title, e.manager_id from employee e inner join designation d on e.job_id = d.designation_id\n" +
 //            "order by d.level_id, e.employee_name;")
 //    @Query("SELECT e.employeeID, e.employeeName, e.jobTitle, e.managerID FROM Employee E INNER JOIN Designation d ON e.jobID = d.designationID")

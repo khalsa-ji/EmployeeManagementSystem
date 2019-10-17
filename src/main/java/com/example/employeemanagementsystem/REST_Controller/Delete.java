@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(value = "/employees")
+@RequestMapping(value = "/api/v1/employees")
 @Api
 public class Delete {
     @Autowired
@@ -25,19 +25,29 @@ public class Delete {
     @DeleteMapping(value = "/{ID}", produces = "application/json")
     @ApiOperation(value = "Delete an employee by his/her employee id.", response = Employee.class)
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Employee with the given employee id deleted successfully."),
+            @ApiResponse(code = 204, message = "Employee with the given employee id deleted successfully."),
             @ApiResponse(code = 404, message = "Employee with given employee id not found!"),
+            @ApiResponse(code = 400, message = "Employee ID could not be negative."),       //  TODO Check 2 different responses for same HTTP Response Code.
             @ApiResponse(code = 400, message = "Director can't be deleted until there is no other employee reporting to him/her.")
     })
     public ResponseEntity<Employee> deleteEmployee(@PathVariable("ID") Long ID) {
+        if(ID < 0)
+            return ResponseEntity.badRequest().build();
+
         Employee employee = service.getEmployeeByID(ID);
         if(employee.getEmployeeID() == 0)
             return ResponseEntity.notFound().build();
 
-        if(employee.getJobTitle().equals("director") && !service.getEmployeesByManagerID(employee.getEmployeeID()).isEmpty())
+        if(employee.getJobTitle().equals("Director") && !service.getEmployeesByManagerID(employee.getEmployeeID()).isEmpty())
             return ResponseEntity.badRequest().build();
 
         service.deleteEmployee(ID);
-        return ResponseEntity.ok(employee);
+
+        //  Formatting output
+//        employee.setEmployeeName(employee.getEmployeeName().substring(0, 1).toUpperCase() + employee.getEmployeeName().substring(1));
+//        employee.setJobTitle(employee.getJobTitle().substring(0, 1).toUpperCase() + employee.getJobTitle().substring(1));
+
+//        return ResponseEntity.ok(employee);
+        return ResponseEntity.noContent().build();
     }
 }

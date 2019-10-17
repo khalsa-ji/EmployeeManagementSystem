@@ -2,7 +2,6 @@
 
 package com.example.employeemanagementsystem.service;
 
-import com.example.employeemanagementsystem.Designation;
 import com.example.employeemanagementsystem.Employee;
 import com.example.employeemanagementsystem.builder.EmployeeBuilder;
 import com.example.employeemanagementsystem.repository.EmployeeRepository;
@@ -59,15 +58,7 @@ public class EmployeeService {
         return list;
     }
 
-    public Employee updateEmployee(Employee emp) {
-        Employee employee = repository.findByEmployeeID(emp.getEmployeeID());
-        if(emp.getEmployeeName() != null)   employee.setEmployeeName(emp.getEmployeeName());
-        if(emp.getJobID() != null) {
-            Designation designation = service.getDesignationByID(emp.getJobID().getDesignationID());
-            employee.setJobID(designation);
-            employee.setJobTitle(designation.getDesignation());
-        }
-        if(emp.getManagerID() != -1)    employee.setManagerID(emp.getManagerID());
+    public Employee updateEmployee(Employee employee) {
         return repository.save(employee);
     }
 
@@ -79,7 +70,7 @@ public class EmployeeService {
         return employee;
     }
 
-    public Employee fire(Employee employee) {
-        return deleteEmployee(employee.getEmployeeID());
+    public void fire(Employee employee) {
+        repository.deleteById(employee.getEmployeeID());
     }
 }

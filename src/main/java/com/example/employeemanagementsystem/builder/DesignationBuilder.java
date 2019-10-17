@@ -10,7 +10,7 @@ public class DesignationBuilder {
     private String designation;
 
     public DesignationBuilder() {
-        this.designationID = -1;
+        this.levelID = -1;
     }
 
     public DesignationBuilder setLevelID(float levelID) {
