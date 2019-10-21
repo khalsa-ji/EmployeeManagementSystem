@@ -1,5 +1,5 @@
 com.khalsa_ji.ems
-com.khalsa_ji.ems.REST_Controller
+com.khalsa_ji.ems.rest
 com.khalsa_ji.ems.Web_Controller
 com.khalsa_ji.ems.builder
 com.khalsa_ji.ems.configuration

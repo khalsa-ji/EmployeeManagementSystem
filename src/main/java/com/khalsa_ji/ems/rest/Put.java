@@ -1,6 +1,6 @@
 //  Waheguru Ji!
 
-package com.khalsa_ji.ems.REST_Controller;
+package com.khalsa_ji.ems.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.khalsa_ji.ems.*;
