@@ -197,6 +197,7 @@ printTestCase true
 
 newTestCase "Perform GET /employee"
 getOperation
+
 listSize=$(echo "$body" | $jq ". | length")
 
 if [ "$listSize" == "10" ]; then
@@ -235,7 +236,7 @@ nestedId=$(echo "$body" | $jq ".employee.id")
 nestedTitle=$(echo "$body" | $jq ".employee.name")
 nestedJobTitle=$(echo "$body" | $jq ".employee.jobTitle")
 manager=$(echo "$body" | $jq ".manager.id")
-suboridnatesSize=$(echo "$body" | $jq ".reportingTo | length")
+suboridnatesSize=$(echo "$body" | $jq ".subordinates | length")
 colleaguesSize=$(echo "$body" | $jq ".colleagues | length")
 
 if [ "$id" == "2" ] || [ "$nestedId" == "2" ]; then
@@ -311,7 +312,7 @@ if [ "${test_flag[$test_num-2]}" == "0" ]; then
 else
   for i in {0..2}
   do
-    id=$(echo "$body" | $jq ".reportingTo[$i].id")
+    id=$(echo "$body" | $jq ".subordinates[$i].id")
     if [ "$id" != "${sortedArray[i]}" ]; then
       printTestCase false
       echo "Employee's subordinates was not printed in sorted order"
@@ -455,12 +456,11 @@ else
   putByIdOperation "$id" '{ "name": "Nick Fury", "jobTitle": "Lead", "managerId": 4, "replace": false }'
   managerId=$(echo "$body" | $jq ".manager.id")
 
-
   if [ "$managerId" == "4" ]; then
     printTestCase true
   else
     printTestCase false
-    echo "Response name should be \"4\" but found $title"
+    echo "Response name should be \"4\" but found $managerId"
     echo "Response body: $body"
     echo ""
   fi
