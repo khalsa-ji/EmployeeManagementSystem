@@ -498,31 +498,10 @@ Response
 
 ```json
 {
-    "id": 11,
-    "name": "ABC XYZ",
     "jobTitle": "Manager",
-    "manager": {
-        "id": 1,
-        "name": "Thor",
-        "jobTitle": "Director"
-    },
-    "colleagues": [
-        {
-            "id": 4,
-            "name": "Captain America",
-            "jobTitle": "Manager"
-        },
-        {
-            "id": 2,
-            "name": "Iron Man",
-            "jobTitle": "Manager"
-        },
-        {
-            "id": 3,
-            "name": "Hulk",
-            "jobTitle": "Lead"
-        }
-    ]
+    "id": 11,
+    "managerId": 1,
+    "name": "ABC XYZ"
 }
 ```
 
@@ -542,7 +521,7 @@ Body
 
 Request
 ```
-PUT /api/v1/employees/3
+PUT /api/v1/employees/2
 body: {
     "name": "Black Panther",
     "jobTitle": "Lead",
@@ -554,32 +533,49 @@ body: {
 Response
 ```json
 {
-    "id": 12,
-    "name": "Black Panther",
-    "jobTitle": "Lead",
+    "employee": {
+        "jobTitle": "Lead",
+        "id": 12,
+        "name": "Black Panther"
+    },
     "manager": {
+        "jobTitle": "Director",
         "id": 1,
-        "name": "Thor",
-        "jobTitle": "Director"
+        "name": "Thor"
     },
     "colleagues": [
         {
-            "id": 4,
-            "name": "Captain America",
-            "jobTitle": "Manager"
+            "jobTitle": "Manager",
+            "id": 11,
+            "name": "ABC XYZ"
         },
         {
-            "id": 2,
-            "name": "Iron Man",
-            "jobTitle": "Manager"
+            "jobTitle": "Manager",
+            "id": 4,
+            "name": "Captain America"
+        },
+        {
+            "jobTitle": "Lead",
+            "id": 3,
+            "name": "Hulk"
         }
     ],
     "subordinates": [
-      {
-        "id":10,
-        "name":"Black Widow",
-        "jobTitle":"Developer"
-      }
+        {
+            "jobTitle": "DevOps",
+            "id": 6,
+            "name": "Vision"
+        },
+        {
+            "jobTitle": "QA",
+            "id": 5,
+            "name": "War Machine"
+        },
+        {
+            "jobTitle": "Intern",
+            "id": 9,
+            "name": "Spider Man"
+        }
     ]
 }
 ```
