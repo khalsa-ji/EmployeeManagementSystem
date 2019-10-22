@@ -22,14 +22,14 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @SpringBootApplication
 @EnableSwagger2
 public class EMSApplication {
-	/**
-	 * Method to provide a main entry point of this <em>Spring Boot Application</em> -
-	 * <strong>Employee Management System</strong>.
-	 *
-	 * @param args Command line arguments
-	 */
+    /**
+     * Method to provide a main entry point of this <em>Spring Boot Application</em> -
+     * <strong>Employee Management System</strong>.
+     *
+     * @param args Command line arguments
+     */
 
-	public static void main(String[] args) {
-	SpringApplication.run(EMSApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(EMSApplication.class, args);
+    }
 }

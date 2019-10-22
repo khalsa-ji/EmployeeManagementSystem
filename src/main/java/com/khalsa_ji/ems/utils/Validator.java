@@ -5,7 +5,7 @@ package com.khalsa_ji.ems.utils;
 import java.util.regex.Pattern;
 
 public class Validator {
-    public enum code {ok, nullNumber, negativeNumber, zero, emptyString, nullString, invalidString};
+    public enum code {ok, nullNumber, negativeNumber, zero, emptyString, nullString, invalidString}
 
     public static code validateID(Long ID) {
         if(ID == null)      return code.nullNumber;
