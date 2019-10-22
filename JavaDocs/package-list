@@ -1,8 +1,7 @@
 com.khalsa_ji.ems
-com.khalsa_ji.ems.rest
-com.khalsa_ji.ems.Web_Controller
 com.khalsa_ji.ems.builder
 com.khalsa_ji.ems.configuration
 com.khalsa_ji.ems.repository
+com.khalsa_ji.ems.rest
 com.khalsa_ji.ems.service
 com.khalsa_ji.ems.utils
