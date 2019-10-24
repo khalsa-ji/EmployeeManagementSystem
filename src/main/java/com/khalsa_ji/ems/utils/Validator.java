@@ -4,6 +4,15 @@ package com.khalsa_ji.ems.utils;
 
 import java.util.regex.Pattern;
 
+/**
+ * The class {@code Validator} consists of some pre-defined error codes and
+ * some method implementations that validate given data and produces appropriate error codes
+ *
+ * @author Ravikiran Singh
+ * @version 1.0
+ * @since 1.0
+ */
+
 public class Validator {
     public enum code {ok, nullNumber, negativeNumber, zero, emptyString, nullString, invalidString}
 

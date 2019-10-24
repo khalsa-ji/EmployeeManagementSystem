@@ -10,11 +10,14 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Locale;
 
 /**
  * The class {@code Delete} is a <em>REST Controller</em> class, which aims to listen to the
@@ -33,6 +36,11 @@ public class Delete {
     @Autowired
     EmployeeService service;
 
+    @Autowired
+    MessageSource messageSource;
+
+    private final String[] EMPLOYEE = {"Employee"};
+
     /**
      * Method to perform <strong>DELETE</strong> operation on the entity defined by the {@code Employee} class
      *
@@ -49,24 +57,28 @@ public class Delete {
             @ApiResponse(code = 400, message = "Employee ID could not be negative."),       //  TODO Check 2 different responses for same HTTP Response Code.
             @ApiResponse(code = 400, message = "Director can't be deleted until there is no other employee reporting to him/her.")
     })
-    public ResponseEntity<Employee> deleteEmployee(@PathVariable("ID") Long ID) {
+    public ResponseEntity<Object> deleteEmployee(@PathVariable("ID") Long ID) {
         //  Validating ID
         switch(Validator.validateID(ID)) {
-            case nullNumber:        return ResponseEntity.badRequest().build();
-            case zero:              return ResponseEntity.badRequest().build();
-            case negativeNumber:    return ResponseEntity.badRequest().build();
+            case nullNumber:        return ResponseEntity.badRequest()
+                    .body(messageSource.getMessage("error.code.nullNumber", EMPLOYEE, Locale.getDefault()));
+            case zero:              return ResponseEntity.badRequest()
+                    .body(messageSource.getMessage("error.code.zero", EMPLOYEE, Locale.getDefault()));
+            case negativeNumber:    return ResponseEntity.badRequest()
+                    .body(messageSource.getMessage("error.code.negativeNumber", EMPLOYEE, Locale.getDefault()));
         }
 
         Employee employee = service.getEmployeeByID(ID);
 
-        //  If employee with employee id as ID doesn't exists
+        //  If employee with specified id does not exists.
         if(employee.getEmployeeID() == 0)
             return ResponseEntity.notFound().build();
 
         //  If director is tried to be deleted and there is atleast one employee who reports to the director then,
         //  this operation should not be allowed.
         if(employee.getJobTitle().equals("Director") && !service.getEmployeesByManagerID(employee.getEmployeeID()).isEmpty())
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest()
+                    .body(messageSource.getMessage("error.delete.director", null, Locale.getDefault()));
 
         service.deleteEmployee(ID);
         return ResponseEntity.noContent().build();

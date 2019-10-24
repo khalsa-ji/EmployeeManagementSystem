@@ -3,23 +3,28 @@
 package com.khalsa_ji.ems.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.khalsa_ji.ems.*;
+import com.khalsa_ji.ems.Designation;
+import com.khalsa_ji.ems.Employee;
+import com.khalsa_ji.ems.EmployeeBrief;
+import com.khalsa_ji.ems.EmployeeChart;
 import com.khalsa_ji.ems.builder.DesignationBuilder;
 import com.khalsa_ji.ems.builder.EmployeeBuilder;
 import com.khalsa_ji.ems.builder.EmployeeChartBuilder;
 import com.khalsa_ji.ems.service.DesignationService;
 import com.khalsa_ji.ems.service.EmployeeService;
+import com.khalsa_ji.ems.utils.ComparatorClass;
 import com.khalsa_ji.ems.utils.Validator;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -43,6 +48,13 @@ public class Put {
     @Autowired
     DesignationService designationService;
 
+    @Autowired
+    MessageSource messageSource;
+
+    private final String[] EMPLOYEE = {"Employee"};
+    private final String[] EMPLOYEE_NAME = {"Employee name"};
+    private final String[] MANAGER = {"Manager"};
+
     /**
      * Method to update/replace an already existing instance of the {@code Employee} class
      *
@@ -57,15 +69,16 @@ public class Put {
     @ApiOperation(value = "Update information for an existing employee")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Information updated successfully"),
-            @ApiResponse(code = 404, message = "Invalid details found for updating the employee information")
+            @ApiResponse(code = 400, message = "Invalid details found for updating the employee information"),
+            @ApiResponse(code = 404, message = "Employee with given ID not found!")
     })
-    public ResponseEntity<EmployeeChart> updateEmployee(
+    public ResponseEntity<Object> updateEmployee(
             @PathVariable(value = "ID") Long ID,
             @RequestBody String jsonString
     ) {
         String name = null, jTitle = null, mID = null, isReplace = null;
         ObjectMapper mapper = new ObjectMapper();
-        Map<String, String> m = new HashMap<>();
+        Map<String, String> m;
 
         //  Parsing JSON String
         try {
@@ -79,9 +92,9 @@ public class Put {
         //  If JSON String corresponds to a empty JSON object
         if(m.isEmpty())     return ResponseEntity.badRequest().build();
 
-        //  Converting map key-value pairs to appropriate previous query string parameters.
-        if(m.containsKey("name"))               name = m.get("name").toString();
-        if(m.containsKey("jobTitle"))           jTitle = m.get("jobTitle").toString();
+        //  Converting map's key-value pairs to appropriate previous query string parameters.
+        if(m.containsKey("name"))               name = m.get("name");
+        if(m.containsKey("jobTitle"))           jTitle = m.get("jobTitle");
         if(m.containsKey("managerId"))          mID = String.valueOf(m.get("managerId"));
         if(m.containsKey("replace"))            isReplace = String.valueOf(m.get("replace"));
 
@@ -90,14 +103,17 @@ public class Put {
 
         //  Validating ID
         switch(Validator.validateID(ID)) {
-            case nullNumber:        return ResponseEntity.badRequest().build();
-            case zero:              return ResponseEntity.badRequest().build();
-            case negativeNumber:    return ResponseEntity.badRequest().build();
+            case nullNumber:        return ResponseEntity.badRequest()
+                    .body(messageSource.getMessage("error.code.nullNumber", EMPLOYEE, Locale.getDefault()));
+            case zero:              return ResponseEntity.badRequest()
+                    .body(messageSource.getMessage("error.code.zero", EMPLOYEE, Locale.getDefault()));
+            case negativeNumber:    return ResponseEntity.badRequest()
+                    .body(messageSource.getMessage("error.code.negativeNumber", EMPLOYEE, Locale.getDefault()));
         }
 
         //  If employee with specified id does not exists.
         if(prevEmployee.getEmployeeID() == 0)
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.notFound().build();
 
         if(isReplace == null)       isReplace = "false";
 
@@ -106,14 +122,18 @@ public class Put {
 
             //  If specified designation does not exists.
             if(designation.getLevelID() == -1)
-                return ResponseEntity.badRequest().build();
+                return ResponseEntity.badRequest()
+                        .body(messageSource.getMessage("error.designation.notFound", new String[]{jTitle}, Locale.getDefault()));
         }
 
-        //  Validating employee's name
-        switch(Validator.validateString(name)) {
-            case nullString:        return ResponseEntity.badRequest().build();
-            case emptyString:       return ResponseEntity.badRequest().build();
-            case invalidString:     return ResponseEntity.badRequest().build();
+        if(name != null) {
+            //  Validating employee's name
+            switch (Validator.validateString(name)) {
+                case emptyString:       return ResponseEntity.badRequest()
+                        .body(messageSource.getMessage("error.code.emptyString", EMPLOYEE_NAME, Locale.getDefault()));
+                case invalidString:     return ResponseEntity.badRequest()
+                        .body(messageSource.getMessage("error.code.invalidString", EMPLOYEE_NAME, Locale.getDefault()));
+            }
         }
 
         Employee employee = new EmployeeBuilder()
@@ -127,7 +147,14 @@ public class Put {
         else
             employee.setEmployeeID(ID);
 
-        if(mID != null)     employee.setManagerID(Integer.parseInt(mID));
+        if(mID != null) {
+            //  Validating Manager ID
+            switch(Validator.validateID(employee.getManagerID())) {
+                case zero:              return ResponseEntity.badRequest()
+                        .body(messageSource.getMessage("error.code.zero", MANAGER, Locale.getDefault()));
+            }
+            employee.setManagerID(Integer.parseInt(mID));
+        }
 
         Employee manager = service.getEmployeeByID(prevEmployee.getManagerID());
 
