@@ -142,6 +142,7 @@ public class Put {
                 .setJobID(designation)
                 .build();
 
+        //  In case the replacing employee is already an existing employee
         if(m.containsKey("id") && Boolean.parseBoolean(isReplace))
             employee.setEmployeeID(Long.parseLong(String.valueOf(m.get("id"))));
         else
@@ -158,15 +159,20 @@ public class Put {
 
         Employee manager = service.getEmployeeByID(prevEmployee.getManagerID());
 
+        //  If manager isn't defined and job title(designation) doesn't equals Director then,
+        //  the operation should not be allowed.
         if(manager.getEmployeeID() == 0 && employee.getJobTitle() != null &&  !employee.getJobTitle().equals("Director"))
             return ResponseEntity.badRequest().build();
 
+        //  Director can't be demoted
         if(prevEmployee.getJobTitle().equals("Director") && employee.getJobID().getLevelID() > 1.0f)
             return ResponseEntity.badRequest().build();
 
+        //  Director can't have any supervisor, at any point of time
         if(manager.getJobID() == null)
             return ResponseEntity.badRequest().build();
 
+        //  No employee can have higher position than its manager
         if(employee.getJobID().getLevelID() != -1 && manager.getJobID().getLevelID() >= employee.getJobID().getLevelID())
             return ResponseEntity.badRequest().build();
 
@@ -174,9 +180,7 @@ public class Put {
         List<Employee> reportingTo = service.getEmployeesByManagerID(ID);
         EmployeeChart chart;
 
-        if(manager.getJobID().getLevelID() >= employee.getJobID().getLevelID())
-            return ResponseEntity.badRequest().build();
-
+        //  No employee can manage other employees having position higher or equal to him/her.
         for(Employee emp : reportingTo) {
             if(emp.getJobID().getLevelID() <= employee.getJobID().getLevelID())
                 return ResponseEntity.badRequest().build();
@@ -226,8 +230,8 @@ public class Put {
         manager = service.getEmployeeByID(prevEmployee.getManagerID());
 
         colleagues = service.getEmployeesByManagerID(prevEmployee.getManagerID());
-        Employee finalEmployee1 = prevEmployee;
-        colleagues.removeIf(colleague -> colleague.getEmployeeID() == finalEmployee1.getEmployeeID());
+        Employee finalEmployee = prevEmployee;
+        colleagues.removeIf(colleague -> colleague.getEmployeeID() == finalEmployee.getEmployeeID());
 
         colleagues.sort(ComparatorClass.customComparator);
         reportingTo.sort(ComparatorClass.customComparator);
