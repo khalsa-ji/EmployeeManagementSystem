@@ -2,15 +2,20 @@
 
 package com.khalsa_ji.ems.rest;
 
-import com.khalsa_ji.ems.*;
+import com.khalsa_ji.ems.Designation;
+import com.khalsa_ji.ems.Employee;
+import com.khalsa_ji.ems.EmployeeBrief;
+import com.khalsa_ji.ems.EmployeeChart;
 import com.khalsa_ji.ems.builder.EmployeeChartBuilder;
 import com.khalsa_ji.ems.service.DesignationService;
 import com.khalsa_ji.ems.service.EmployeeService;
+import com.khalsa_ji.ems.utils.ComparatorClass;
 import com.khalsa_ji.ems.utils.Validator;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * The class {@code Get} is a <em>REST Controller</em> class, which aims to listen to the
@@ -40,6 +46,12 @@ public class Get {
 
     @Autowired
     DesignationService designationService;
+
+    @Autowired
+    MessageSource messageSource;
+
+    private final String[] EMPLOYEE = {"Employee"};
+    private final String[] DESIGNATION = {"Designation"};
 
     /**
      * Method to fetch all instances of the {@code Employee} class
@@ -127,12 +139,15 @@ public class Get {
             @ApiResponse(code = 400, message = "Employee ID could not be negative."),
             @ApiResponse(code = 404, message = "Employee with the given Employee ID not found!")
     })
-    public ResponseEntity<EmployeeChart> getEmployee(@PathVariable(value = "ID") Long ID) {
+    public ResponseEntity<Object> getEmployee(@PathVariable(value = "ID") Long ID) {
         //  Validating ID
         switch(Validator.validateID(ID)) {
-            case nullNumber:        return ResponseEntity.badRequest().build();
-            case zero:              return ResponseEntity.badRequest().build();
-            case negativeNumber:    return ResponseEntity.badRequest().build();
+            case nullNumber:        return ResponseEntity.badRequest()
+                    .body(messageSource.getMessage("error.code.nullNumber", EMPLOYEE, Locale.getDefault()));
+            case zero:              return ResponseEntity.badRequest()
+                    .body(messageSource.getMessage("error.code.zero", EMPLOYEE, Locale.getDefault()));
+            case negativeNumber:    return ResponseEntity.badRequest()
+                    .body(messageSource.getMessage("error.code.negativeNumber", EMPLOYEE, Locale.getDefault()));
         }
 
         Employee employee = service.getEmployeeByID(ID);
@@ -194,10 +209,23 @@ public class Get {
             @ApiResponse(code = 404, message = "Designation with given ID not found!"),
             @ApiResponse(code = 200, message = "Designation with given ID found successfully")
     })
-    public ResponseEntity<Designation> getDesignation(@PathVariable(value = "ID") Integer ID) {
+    public ResponseEntity<Object> getDesignation(@PathVariable(value = "ID") Integer ID) {
+        //  Validating ID
+        switch(Validator.validateID(Long.valueOf(ID))) {
+            case nullNumber:        return ResponseEntity.badRequest()
+                    .body(messageSource.getMessage("error.code.nullNumber", DESIGNATION, Locale.getDefault()));
+            case zero:              return ResponseEntity.badRequest()
+                    .body(messageSource.getMessage("error.code.zero", DESIGNATION, Locale.getDefault()));
+            case negativeNumber:    return ResponseEntity.badRequest()
+                    .body(messageSource.getMessage("error.code.negativeNumber", DESIGNATION, Locale.getDefault()));
+        }
+
         Designation designation = designationService.getDesignationByID(ID);
+
+        //  If designation with specified id does not exists.
         if(designation.getDesignationID() == -1)
             return ResponseEntity.notFound().build();
+
         return ResponseEntity.ok(designation);
     }
 }

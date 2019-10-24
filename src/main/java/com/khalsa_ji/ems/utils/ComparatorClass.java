@@ -1,6 +1,8 @@
 //  Waheguru Ji!
 
-package com.khalsa_ji.ems;
+package com.khalsa_ji.ems.utils;
+
+import com.khalsa_ji.ems.Employee;
 
 import java.util.Comparator;
 
