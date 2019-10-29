@@ -1,3 +1,0 @@
-<%--Testing purpose...--%>
-
-${employee.employeeID}
