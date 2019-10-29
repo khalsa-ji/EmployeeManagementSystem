@@ -1,5 +1,5 @@
 # Employee Management System
-A spring boot application which provides implementation of REST APIs for a Employee Management System(EMS).
+A spring boot application which provides implementation of REST APIs for a Employee Management System(EMS) and stores the data using MySQL database.
 
 ## Table of Contents
 - [Database](#database)
