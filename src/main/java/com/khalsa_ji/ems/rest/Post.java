@@ -122,7 +122,7 @@ public class Post {
         }
 
         //  If employee's job title(designation) is found to be Director and there already exists another Director
-        if(designation.getDesignation().equals("Director") && employeeService.getDirector().getEmployeeID() != 0)
+        if(designation.getDesignation().equals("Director") && !employeeService.getEmployeesByManagerID(0L).isEmpty())
             return ResponseEntity.badRequest()
                     .body(messageSource.getMessage("error.director.alreadyExists", null, Locale.getDefault()));
 
