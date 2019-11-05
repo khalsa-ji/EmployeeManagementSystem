@@ -43,19 +43,6 @@ public class EmployeeService {
     }
 
     /**
-     * Method to fetch Director(an instance of {@code Employee} class) of the organisation
-     *
-     * @return Director(An instance of the {@code Employee} class)
-     * @see Employee
-     */
-
-    public Employee getDirector() {
-        Employee employee = repository.findByManagerID(0L);
-        if(employee == null)    return new EmployeeBuilder().build();
-        return employee;
-    }
-
-    /**
      * Method to fetch all instances of {@code Employee} class
      *
      * @return List of all instances of {@code Employee} class
