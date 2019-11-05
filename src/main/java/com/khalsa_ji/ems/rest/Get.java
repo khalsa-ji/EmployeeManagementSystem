@@ -63,13 +63,10 @@ public class Get {
     @GetMapping(value = "/employees", produces = "application/json")
     @ApiOperation(value = "Retrieves a list of all employees", response = List.class)
     @ApiResponses(value = {
-            @ApiResponse(code = 404, message = "Currently there is no employee available"),
             @ApiResponse(code = 200, message = "Successfully retrieved the complete list")
     })
     public ResponseEntity<List<Employee>> getAllEmployees() {
-        List<Employee> employeeList = service.getAllEmployees();
-        if(employeeList.isEmpty())  return ResponseEntity.notFound().build();
-        return ResponseEntity.ok(employeeList);
+        return ResponseEntity.ok(service.getAllEmployees());
     }
 
     /**
@@ -84,8 +81,7 @@ public class Get {
     @GetMapping(value = "/employees/details", produces = "application/json")
     @ApiOperation(value = "Fetch detailed employee chart for all the employees", response = List.class)
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully retrieved the complete detailed list"),
-            @ApiResponse(code = 404, message = "Currently there is no employee available")
+            @ApiResponse(code = 200, message = "Successfully retrieved the complete detailed list")
     })
     public ResponseEntity<List<EmployeeChart>> getEmployeesDetails() {
         Employee manager;
@@ -95,7 +91,6 @@ public class Get {
         List<EmployeeChart> list = new LinkedList<>();
 
         List<Employee> employeeList = service.getAllEmployees();
-        if(employeeList.isEmpty())  return ResponseEntity.notFound().build();
 
         //  Generating EmployeeChart for every employee present in the employeeList
         for(Employee employee : employeeList) {
@@ -185,14 +180,10 @@ public class Get {
     @GetMapping(value = "designations", produces = "application/json")
     @ApiOperation(value = "Retrieves a list of all designations", response = List.class)
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully retrieved the complete list"),
-            @ApiResponse(code = 404, message = "Currently there is no designation available")
+            @ApiResponse(code = 200, message = "Successfully retrieved the complete list")
     })
     public ResponseEntity<List<Designation>> getAllDesignations() {
-        List<Designation> list = designationService.getAllDesignations();
-        if(list.isEmpty())
-            return ResponseEntity.notFound().build();
-        return ResponseEntity.ok(list);
+        return ResponseEntity.ok(designationService.getAllDesignations());
     }
 
     /**
