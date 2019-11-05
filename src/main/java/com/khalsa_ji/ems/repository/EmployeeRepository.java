@@ -32,16 +32,6 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     Employee findByEmployeeID(Long ID);
 
     /**
-     * Method to fetch an instance of {@code Employee} class specified by its manager id
-     *
-     * @param managerID Employee's manager id(Employee id of the manager)
-     * @return An instance of {@code Employee} class of specified manager id
-     * @see Employee
-     */
-
-    Employee findByManagerID(Long managerID);
-
-    /**
      * Method to fetch a list of {@code Employee} class instances of specified manager id
      *
      * @param managerID Employee's manager id(Employee id of the manager)
