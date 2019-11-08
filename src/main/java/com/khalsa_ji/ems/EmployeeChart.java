@@ -3,7 +3,12 @@
 package com.khalsa_ji.ems;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.khalsa_ji.ems.builder.EmployeeChartBuilder;
+import com.khalsa_ji.ems.service.EmployeeService;
+import com.khalsa_ji.ems.utils.ComparatorClass;
+import com.khalsa_ji.ems.utils.SpringContext;
 import io.swagger.annotations.ApiModelProperty;
+import org.springframework.context.ApplicationContext;
 
 import java.util.List;
 
@@ -14,10 +19,14 @@ import java.util.List;
  * @author Ravikiran Singh
  * @version 1.0
  * @since 1.0
+ * @see Employee
  * @see EmployeeBrief
+ * @see SpringContext
  */
 
 public class EmployeeChart {
+    private static EmployeeService service;
+
     @ApiModelProperty(notes = "Brief information of the employee")
     private EmployeeBrief employee;
 
@@ -98,6 +107,49 @@ public class EmployeeChart {
 
     public List<EmployeeBrief> getReportingTo() {
         return reportingTo;
+    }
+
+    /**
+     * Method to initialise an instance of the {@code MessageSource} interface's implementation,
+     * a workaround for @Autowired not working in Non-Spring managed class
+     *
+     * @see SpringContext
+     */
+
+    private static void initialise() {
+        ApplicationContext context = SpringContext.getAppContext();
+        service = (EmployeeService) context.getBean("employeeService");
+    }
+
+    /**
+     * Method to generate a typical employee information system dashboard
+     *
+     * @param employee An instance of the {@code Employee} class
+     * @return An instance of the {@code EmployeeChart} class
+     * @see Employee
+     */
+
+    public static EmployeeChart generateFor(Employee employee) {
+        if(service == null)
+            initialise();
+
+        Employee manager = service.getEmployeeByID(employee.getManagerID());
+        List<Employee> colleagues = service.getEmployeesByManagerID(employee.getManagerID());
+        List<Employee> reportingTo = service.getEmployeesByManagerID(employee.getEmployeeID());
+
+        //  Removing the current employee from the colleagues list.
+        colleagues.removeIf(colleague -> colleague.getEmployeeID() == employee.getEmployeeID());
+
+        //  Ordering the list by designation's level id and employee's name
+        colleagues.sort(ComparatorClass.customComparator);
+        reportingTo.sort(ComparatorClass.customComparator);
+
+        return new EmployeeChartBuilder()
+                .setEmployee(EmployeeBrief.convertFrom(employee))
+                .setManager(EmployeeBrief.convertFrom(manager))
+                .setColleagues(EmployeeBrief.convertFrom(colleagues))
+                .setReportingTo(EmployeeBrief.convertFrom(reportingTo))
+                .build();
     }
 
     /**
