@@ -2,6 +2,8 @@
 
 package com.khalsa_ji.ems.configuration;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.LocaleResolver;
@@ -23,6 +25,8 @@ import java.util.Locale;
 
 @Configuration
 public class LocaleConfiguration implements WebMvcConfigurer {
+    private final Logger logger = LoggerFactory.getLogger(LocaleConfiguration.class);
+
     /**
      * Method to generate a Bean for {@code LocaleResolver} and set its default locale to US.
      *
@@ -31,8 +35,11 @@ public class LocaleConfiguration implements WebMvcConfigurer {
 
     @Bean
     public LocaleResolver localeResolver() {
+        logger.info("Registering a bean for LocaleResolver.");
         SessionLocaleResolver slr = new SessionLocaleResolver();
         slr.setDefaultLocale(Locale.US);
+        logger.info("Configured defaultLocale for SessionLocaleResolver as Locale.US");
+        logger.debug("slr[SessionLocaleResolver] --> {}.", slr);
         return slr;
     }
 
@@ -45,8 +52,11 @@ public class LocaleConfiguration implements WebMvcConfigurer {
 
     @Bean
     public LocaleChangeInterceptor localeChangeInterceptor() {
+        logger.info("Registering a bean for LocaleChangeInterceptor");
         LocaleChangeInterceptor lci = new LocaleChangeInterceptor();
         lci.setParamName("language");
+        logger.info("Configured LocaleChangeInterceptor's paramName to language.");
+        logger.debug("lci[LocaleChangeInterceptor] --> {}.", lci);
         return lci;
     }
 
@@ -58,6 +68,9 @@ public class LocaleConfiguration implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
+        logger.info("addInterceptors() called.");
+        logger.debug("PARAMETER registry[InterceptorRegistry] --> {}.", registry);
         registry.addInterceptor(localeChangeInterceptor());
+        logger.info("localeChangeInterceptor() added as an interceptor in InterceptorRegistry.");
     }
 }

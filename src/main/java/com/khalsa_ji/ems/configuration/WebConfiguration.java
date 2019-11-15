@@ -3,6 +3,8 @@
 package com.khalsa_ji.ems.configuration;
 
 import org.apache.catalina.filters.RemoteIpFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -17,6 +19,8 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class WebConfiguration {
+    private final Logger logger = LoggerFactory.getLogger(WebConfiguration.class);
+
     /**
      * Method to generate a bean and fetch an instance of the {@code RemoteIpFilter}. It is helpful for retrieving
      * the real IP address of the client making any requests to the server. It works even in the case when application
@@ -30,6 +34,7 @@ public class WebConfiguration {
 
     @Bean
     public RemoteIpFilter getRemoteIpFilter() {
+        logger.info("Registering a bean for RemoteIpFilter.");
         return new RemoteIpFilter();
     }
 }

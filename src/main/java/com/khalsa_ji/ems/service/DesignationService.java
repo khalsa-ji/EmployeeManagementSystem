@@ -5,6 +5,8 @@ package com.khalsa_ji.ems.service;
 import com.khalsa_ji.ems.Designation;
 import com.khalsa_ji.ems.builder.DesignationBuilder;
 import com.khalsa_ji.ems.repository.DesignationRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +27,8 @@ public class DesignationService {
     @Autowired
     DesignationRepository repository;
 
+    private final Logger logger = LoggerFactory.getLogger(DesignationService.class);
+
     /**
      * Method to fetch an instance of {@code Designation} class specified by its id
      *
@@ -34,7 +38,10 @@ public class DesignationService {
      */
 
     public Designation getDesignationByID(Integer ID) {
+        logger.info("getDesignationByID() called.");
+        logger.debug("PARAMETER ID[Integer] --> {}.", ID);
         Designation designation = repository.findByDesignationID(ID);
+        logger.debug("Designation found --> {}", designation);
         if(designation == null)     return new DesignationBuilder().build();
         return designation;
     }
@@ -48,7 +55,10 @@ public class DesignationService {
      */
 
     public Designation getDesignation(String jobTitle) {
+        logger.info("getDesignation() called.");
+        logger.debug("PARAMETER jobTitle[String] --> {}.", jobTitle);
         Designation designation = repository.findByDesignation(jobTitle);
+        logger.debug("Designation found --> {}", designation);
         if(designation == null)     return new DesignationBuilder().build();
         return designation;
     }
@@ -61,6 +71,14 @@ public class DesignationService {
      */
 
     public List<Designation> getAllDesignations() {
-        return repository.findAll();
+        logger.info("getAllDesignations() called.");
+        List<Designation> designations = repository.findAll();
+        logger.debug("Designations: ");
+        if(logger.isDebugEnabled()) {
+            long ctr = 0;
+            for(Designation designation : designations)
+                logger.debug("{}. {}", ++ctr, designation);
+        }
+        return designations;
     }
 }

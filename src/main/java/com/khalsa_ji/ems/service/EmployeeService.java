@@ -5,6 +5,8 @@ package com.khalsa_ji.ems.service;
 import com.khalsa_ji.ems.Employee;
 import com.khalsa_ji.ems.builder.EmployeeBuilder;
 import com.khalsa_ji.ems.repository.EmployeeRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +30,8 @@ public class EmployeeService {
     @Autowired
     DesignationService service;
 
+    private final Logger logger = LoggerFactory.getLogger(EmployeeService.class);
+
     /**
      * Method to fetch an instance of {@code Employee} class specified by its id
      *
@@ -37,7 +41,10 @@ public class EmployeeService {
      */
 
     public Employee getEmployeeByID(Long ID) {
+        logger.info("getEmployeeByID() called.");
+        logger.debug("PARAMETER ID[Long] --> {}.", ID);
         Employee employee = repository.findByEmployeeID(ID);
+        logger.debug("Employee found --> {}", employee);
         if(employee == null)    return new EmployeeBuilder().build();
         return employee;
     }
@@ -50,7 +57,15 @@ public class EmployeeService {
      */
 
     public List<Employee> getAllEmployees() {
-        return repository.findAllByOrderByJobID_levelIDAscEmployeeNameAsc();
+        logger.info("getAllEmployees() called.");
+        List<Employee> employees = repository.findAllByOrderByJobID_levelIDAscEmployeeNameAsc();
+        logger.debug("Employees: ");
+        if(logger.isDebugEnabled()) {
+            long ctr = 0;
+            for (Employee employee : employees)
+                logger.debug("{}. {}", ++ctr, employee);
+        }
+        return employees;
     }
 
     /**
@@ -63,7 +78,16 @@ public class EmployeeService {
      */
 
     public List<Employee> getEmployeesByManagerID(Long managerID) {
-        return repository.findAllByManagerID(managerID);
+        logger.info("getEmployeesByManagerID() called.");
+        logger.debug("PARAMETER managerID[Long]", managerID);
+        List<Employee> employees = repository.findAllByManagerID(managerID);
+        logger.debug("Employees: ");
+        if(logger.isDebugEnabled()) {
+            long ctr = 0;
+            for(Employee employee : employees)
+                logger.debug("{}. {}", ++ctr, employee);
+        }
+        return employees;
     }
 
 //    public List<Employee> getColleagues(Long managerID, Long ID) {
@@ -83,6 +107,8 @@ public class EmployeeService {
      */
 
     public Employee addEmployee(Employee employee) {
+        logger.info("addEmployee() called.");
+        logger.debug("PARAMETER employee[Employee] --> {}.", employee);
         return repository.save(employee);
     }
 
@@ -96,7 +122,11 @@ public class EmployeeService {
      */
 
     public List<Employee> updateManager(List<Employee> list, Long managerID) {
+        logger.info("updateManager() called.");
+        logger.debug("PARAMETER managerID[Long] --> {}.", managerID);
+        logger.debug("PARAMETER list[List<Employee>] --> {}.", list);
         for(Employee employee : list) {
+            logger.debug("Updating managerID for employee --> {}.", employee);
             employee.setManagerID(managerID);
             repository.save(employee);
         }
@@ -112,6 +142,8 @@ public class EmployeeService {
      */
 
     public Employee updateEmployee(Employee employee) {
+        logger.info("updateEmployee() called.");
+        logger.debug("PARAMETER employee[Employee] --> {}.", employee);
         return repository.save(employee);
     }
 
@@ -125,10 +157,15 @@ public class EmployeeService {
      */
 
     public Employee deleteEmployee(Long ID) {
+        logger.info("deleteEmployee() called.");
+        logger.debug("PARAMETER ID[Long] --> {}.", ID);
         Employee employee = repository.findByEmployeeID(ID);
+        logger.debug("Employee found --> {}", employee);
         if(employee == null)    return new EmployeeBuilder().build();
         repository.deleteById(ID);
+        logger.info("Employee with ID = {} was deleted successfully.", ID);
         repository.updateManagerID(employee.getEmployeeID(), employee.getManagerID());
+        logger.info("Updated managerID for all subordinates of employee with ID = {} to {}.", ID, employee.getManagerID());
         return employee;
     }
 
@@ -142,6 +179,8 @@ public class EmployeeService {
      */
 
     public void fire(Employee employee) {
+        logger.info("fire() called.");
+        logger.debug("PARAMETER employee[Employee] --> {}.", employee);
         repository.deleteById(employee.getEmployeeID());
     }
 }

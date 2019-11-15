@@ -304,7 +304,7 @@ public class EmployeeController {
         try {
             m = mapper.readValue(jsonString, Map.class);
         }catch(IOException e) {
-            System.out.println("Json to Map - mapping error found!");
+            System.err.println("Json to Map - mapping error found!");
             e.printStackTrace();
             return ResponseEntity.badRequest().build();
         }
