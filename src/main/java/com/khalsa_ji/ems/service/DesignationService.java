@@ -81,4 +81,31 @@ public class DesignationService {
         }
         return designations;
     }
+
+    public Designation addDesignation(Designation designation) {
+        logger.info("addDesignation() called.");
+        logger.debug("PARAMETER designation[Designation] --> {}.", designation);
+        return repository.save(designation);
+    }
+
+    //  TODO immediate(superior/inferior)designation[id] --> names are too long. Need to make them more crisp.
+    public Designation getImmediateInferiorDesignation(Float levelID) {
+        logger.info("getImmediateInferiorDesignation() called.");
+        logger.debug("PARAMETER levelID[Integer] --> {}.", levelID);
+        Designation designation = repository.findImmediateInferiorDesignation(levelID);
+        logger.debug("Designation found --> {}.", designation);
+        if(designation == null)     return new DesignationBuilder().build();
+        return designation;
+    }
+
+    public Designation deleteDesignation(Integer ID) {
+        logger.info("deleteDesignation() called.");
+        logger.debug("PARAMETER ID[Integer] --> {}.", ID);
+        Designation designation = repository.findByDesignationID(ID);
+        logger.debug("Designation found --> {}", designation);
+        if(designation == null)    return new DesignationBuilder().build();
+        repository.deleteById(ID);
+        logger.info("Designation with ID = {} was deleted successfully.", ID);
+        return designation;
+    }
 }

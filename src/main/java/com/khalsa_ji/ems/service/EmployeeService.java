@@ -183,4 +183,17 @@ public class EmployeeService {
         logger.debug("PARAMETER employee[Employee] --> {}.", employee);
         repository.deleteById(employee.getEmployeeID());
     }
+
+    public List<Employee> getEmployeesByJobID(Integer ID) {
+        logger.info("getEmployeesByJobID() called.");
+        logger.debug("PARAMETER ID[Integer] --> {}.", ID);
+        List<Employee> employees = repository.findByJobID_DesignationID(ID);
+        logger.debug("Employees: ");
+        if(logger.isDebugEnabled()) {
+            long ctr = 0;
+            for (Employee employee : employees)
+                logger.debug("{}. {}", ++ctr, employee);
+        }
+        return employees;
+    }
 }

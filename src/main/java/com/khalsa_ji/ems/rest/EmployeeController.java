@@ -2,6 +2,9 @@
 
 package com.khalsa_ji.ems.rest;
 
+//  TODO Modify EmployeeController's logic to accomodate changes such that currently Director is considered as the highest designation, instead make that one to be generic.
+//  TODO so that if the highest designation is ABC then also the rest of the business logic should work.
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.khalsa_ji.ems.Designation;
 import com.khalsa_ji.ems.Employee;
@@ -216,7 +219,7 @@ public class EmployeeController {
             return ResponseEntity.badRequest()
                     .body(messageSource.getMessage("error.director.alreadyExists", null, Locale.getDefault()));
 
-        service.addEmployee(employee);
+        employee = service.addEmployee(employee);
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest().path("/{id}")

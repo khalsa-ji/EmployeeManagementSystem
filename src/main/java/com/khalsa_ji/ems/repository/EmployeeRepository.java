@@ -65,6 +65,8 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     @Query(value = "UPDATE employee e SET e.manager_id = ?2 WHERE e.manager_id = ?1", nativeQuery = true)
     int updateManagerID(Long prevID, Long newID);
 
+    List<Employee> findByJobID_DesignationID(Integer ID);
+
 //    @Query(value = "SELECT e.employee_id, e.employee_name, e.job_title, e.manager_id FROM employee e " +
 //            "INNER JOIN designation d ON e.job_id = d.designation_id " +
 //            "WHERE e.manager_id = ?1 AND e.employee_id <> ?2 " +
